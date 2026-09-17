@@ -11,16 +11,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.wordquest.app.models.GameMode
+import com.wordquest.app.models.GameTheme
 import com.wordquest.app.services.HapticsManager
 import com.wordquest.app.services.SettingsStore
 import com.wordquest.app.services.SoundManager
+import com.wordquest.app.ui.navigation.GameThemeNavType
 import com.wordquest.app.ui.navigation.HomeRoute
 import com.wordquest.app.ui.navigation.LevelMapRoute
 import com.wordquest.app.ui.navigation.MultiplayerRoute
+import com.wordquest.app.ui.navigation.NullableGameThemeNavType
 import com.wordquest.app.ui.navigation.SettingsRoute
 import com.wordquest.app.ui.navigation.ThemeSelectRoute
 import com.wordquest.app.ui.navigation.TriviaGameRoute
 import com.wordquest.app.ui.navigation.WordSearchGameRoute
+import kotlin.reflect.typeOf
 import com.wordquest.app.ui.screens.home.HomeScreen
 import com.wordquest.app.ui.screens.levelmap.LevelMapScreen
 import com.wordquest.app.ui.screens.multiplayer.MultiplayerLobbyScreen
@@ -68,7 +72,9 @@ fun WordQuestApp() {
                 )
             }
 
-            composable<LevelMapRoute> { backStackEntry ->
+            composable<LevelMapRoute>(
+                typeMap = mapOf(typeOf<GameTheme>() to GameThemeNavType),
+            ) { backStackEntry ->
                 val route = backStackEntry.toRoute<LevelMapRoute>()
                 LevelMapScreen(
                     mode = route.mode,
@@ -85,7 +91,9 @@ fun WordQuestApp() {
                 )
             }
 
-            composable<WordSearchGameRoute> { backStackEntry ->
+            composable<WordSearchGameRoute>(
+                typeMap = mapOf(typeOf<GameTheme>() to GameThemeNavType),
+            ) { backStackEntry ->
                 val route = backStackEntry.toRoute<WordSearchGameRoute>()
                 WordSearchScreen(
                     theme = route.theme,
@@ -102,7 +110,9 @@ fun WordQuestApp() {
                 )
             }
 
-            composable<TriviaGameRoute> { backStackEntry ->
+            composable<TriviaGameRoute>(
+                typeMap = mapOf(typeOf<GameTheme>() to GameThemeNavType),
+            ) { backStackEntry ->
                 val route = backStackEntry.toRoute<TriviaGameRoute>()
                 TriviaScreen(
                     theme = route.theme,
@@ -123,7 +133,9 @@ fun WordQuestApp() {
                 SettingsScreen(onBack = { navController.popBackStack() })
             }
 
-            composable<MultiplayerRoute> { backStackEntry ->
+            composable<MultiplayerRoute>(
+                typeMap = mapOf(typeOf<GameTheme?>() to NullableGameThemeNavType),
+            ) { backStackEntry ->
                 val route = backStackEntry.toRoute<MultiplayerRoute>()
                 MultiplayerLobbyScreen(initialTheme = route.theme, onBack = { navController.popBackStack() })
             }
