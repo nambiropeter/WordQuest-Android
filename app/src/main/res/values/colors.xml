@@ -1,0 +1,4 @@
+<resources>
+    <!-- Matches iOS's Assets.xcassets/AccentColor (#9D4EF7). -->
+    <color name="ic_launcher_background">#9D4EF7</color>
+</resources>
