@@ -9,17 +9,17 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Local multiplayer (Nearby Connections). Bluetooth permissions are the API 31+
-         path; ACCESS_FINE_LOCATION/ACCESS_COARSE_LOCATION cover API 23-30 devices, where
-         BLE scanning requires location access even though the app never reads location
-         itself (Nearby Connections declares neverForLocation since it only uses the scan
-         for peer discovery). NEARBY_WIFI_DEVICES is the API 33+ Wi-Fi equivalent. -->
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" android:usesPermissionFlags="neverForLocation" tools:targetApi="s" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" tools:targetApi="s" />
-    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" android:usesPermissionFlags="neverForLocation" tools:targetApi="33" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:maxSdkVersion="32" />
+    <!-- Local multiplayer: Bonjour/NSD discovery + TCP on the local network, the same
+         protocol iOS uses so the two platforms can play together. Many Wi-Fi drivers
+         drop mDNS packets unless the app holds a multicast lock. -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+
+    <!-- Families policy (the listing includes under-13s): ads must not use the Advertising ID
+         or Privacy Sandbox ad APIs, so drop the permissions play-services-ads merges in. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_TOPICS" tools:node="remove" />
 
     <application
         android:name=".WordQuestApplication"
@@ -29,12 +29,6 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.WordQuest">
-
-        <!-- Google's public test AdMob app ID (safe to ship as-is for development —
-             see README for the production ID swap before release). -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <activity
             android:name=".MainActivity"
@@ -46,5 +40,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Hands the generated share-card PNG to other apps via content:// URIs. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- AdMob app ID for the "WordQuest" Android app. Ad unit IDs live in AdsManager. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7633404067070211~3957364712" />
+        <!-- Turns off the debug-only "native ad validator" popup, which otherwise lingers
+             over the game screens after leaving a menu with a test native ad. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED"
+            android:value="false" />
+
+        <!-- Play Games Services v2. The SDK's PlayGamesInitProvider starts at process
+             launch regardless, so this meta-data must be present for sign-in to ever
+             work; see res/values/play_games.xml for why the ID lives in a string
+             resource instead of inline here. -->
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/play_games_app_id" />
     </application>
 </manifest>

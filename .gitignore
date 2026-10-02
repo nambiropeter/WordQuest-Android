@@ -10,3 +10,12 @@ build/
 .cxx
 .kotlin/
 local.properties
+
+# Release signing — never commit a keystore or its credentials.
+*.jks
+*.keystore
+keystore.properties
+
+# Android Studio "Generate Signed Bundle / APK" output — build artifacts, not source.
+/app/release/
+/app/debug/

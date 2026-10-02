@@ -1,0 +1,18 @@
+<resources>
+    <!--
+      Play Games Services v2 application ID, issued by Play Console when you
+      enable Play Games Services for this app and link it to an Android OAuth
+      client (package name + the SHA-1 of your upload/signing keystore).
+
+      Leave empty and the whole feature stays inert: the SDK's app-shortcuts
+      path reads this value, fails to parse it as a Long, catches its own
+      NumberFormatException and carries on, so nothing crashes — but sign-in
+      can never succeed and every PlayGamesReporter call is a no-op.
+
+      This MUST stay a string resource rather than a literal in the manifest.
+      A bare numeric android:value is stored in the meta-data Bundle as an int,
+      and the SDK reads the key with Bundle.getString(), which would then
+      return null even though the ID is present.
+    -->
+    <string name="play_games_app_id" translatable="false"></string>
+</resources>

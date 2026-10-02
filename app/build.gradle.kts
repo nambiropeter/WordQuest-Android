@@ -6,21 +6,25 @@ plugins {
 }
 
 android {
-    namespace = "com.wordquest.app"
-    compileSdk = 35
+    namespace = "com.mamatiquest.app"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.wordquest.app"
+        applicationId = "com.mamatiquest.app"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        targetSdk = 36
+        versionCode = 3
+        versionName = "1.0.2"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
 
@@ -35,6 +39,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     sourceSets {
@@ -55,6 +60,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.fragment.ktx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -65,9 +71,9 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.play.services.nearby)
-    implementation(libs.play.services.ads)
     implementation(libs.play.services.games.v2)
+    implementation(libs.play.services.ads)
     implementation(libs.user.messaging.platform)
     debugImplementation(libs.androidx.ui.tooling)
+    testImplementation(libs.junit)
 }

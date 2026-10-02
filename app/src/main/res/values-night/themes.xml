@@ -1,0 +1,10 @@
+<resources>
+    <!--
+      Dark counterpart to values/themes.xml. Without this the Activity window
+      keeps the light platform theme in dark mode, so anything translucent
+      drawn on top of it (a Scaffold containerColor, a partially transparent
+      surface) blends toward white instead of toward the dark scheme
+      background — and the window also flashes white on launch.
+    -->
+    <style name="Theme.WordQuest" parent="android:Theme.Material.NoActionBar" />
+</resources>
