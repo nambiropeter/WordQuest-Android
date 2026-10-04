@@ -2,7 +2,9 @@ package com.mamatiquest.app.services
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AgeRestrictedTreatment
 import com.google.android.gms.ads.AdRequest
@@ -37,6 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * iOS counterpart: `Services/Ads/AdsManager.swift`.
  */
 object AdsManager {
+    private const val TAG = "AdsManager"
     private val INTERSTITIAL_ID =
         if (BuildConfig.DEBUG) "ca-app-pub-3940256099942544/1033173712" else "ca-app-pub-7633404067070211/9808457199"
     private val NATIVE_ID =
@@ -81,7 +84,10 @@ object AdsManager {
                     if (consent.canRequestAds()) initialize(activity)
                 }
             },
-            { if (consent.canRequestAds()) initialize(activity) },
+            { error ->
+                Log.w(TAG, "Consent info update failed (${error.errorCode}): ${error.message}")
+                if (consent.canRequestAds()) initialize(activity)
+            },
         )
         // Consent from a previous session lets ads start without waiting on the network.
         if (consent.canRequestAds()) initialize(activity)
@@ -119,6 +125,7 @@ object AdsManager {
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
+                Log.w(TAG, "Rewarded failed to load: $error")
                 rewardedLoading = false
                 rewardedAd = null
                 _rewardedAvailable.value = false
@@ -136,6 +143,7 @@ object AdsManager {
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
+                Log.w(TAG, "Interstitial failed to load: $error")
                 interstitialLoading = false
                 interstitialAd = null
             }
@@ -182,6 +190,11 @@ object AdsManager {
     fun loadNative(context: Context, onLoaded: (NativeAd) -> Unit) {
         AdLoader.Builder(context, NATIVE_ID)
             .forNativeAd(onLoaded)
+            .withAdListener(object : AdListener() {
+                override fun onAdFailedToLoad(error: LoadAdError) {
+                    Log.w(TAG, "Native failed to load: $error")
+                }
+            })
             .withNativeAdOptions(
                 NativeAdOptions.Builder()
                     .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)

@@ -45,6 +45,7 @@ object LevelCatalog {
             words = selected,
             gridSize = gridSize,
             seed = base * 104729 + level * 3 + 2,
+            difficulty = b / 9f,
         )
 
         return WordSearchPuzzle(
